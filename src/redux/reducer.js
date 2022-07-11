@@ -12,7 +12,7 @@ const initState = {
 };
 
 const rootReducer = (state = initState, action) => {
-  console.log({ state, action });
+  // console.log({ state, action });
   /*
       {
         type: "todoList/addTodo",

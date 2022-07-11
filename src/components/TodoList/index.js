@@ -1,14 +1,16 @@
 import { Col, Row, Input, Button, Select, Tag } from "antd";
 import { useState } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { v4 as uuidv4 } from "uuid";
 import { addTodo } from "../../redux/actions";
-import Todo from "../Todo";
 
 export default function TodoList() {
   const dispatch = useDispatch();
   const [todoName, setTodoName] = useState("");
   const [prioriry, setPriority] = useState("Medium");
+
+  const todoList = useSelector((state) => state.todoList);
+  console.log(todoList);
 
   const handleInputChange = (e) => {
     const value = e.target.value;
@@ -34,9 +36,9 @@ export default function TodoList() {
   return (
     <Row style={{ height: "calc(100% - 40px)" }}>
       <Col span={24} style={{ height: "calc(100% - 40px)", overflowY: "auto" }}>
-        <Todo name="Learn React" prioriry="High" />
+        {/* <Todo name="Learn React" prioriry="High" />
         <Todo name="Learn Redux" prioriry="Medium" />
-        <Todo name="Learn JavaScript" prioriry="Low" />
+        <Todo name="Learn JavaScript" prioriry="Low" /> */}
       </Col>
       <Col span={24}>
         <Input.Group style={{ display: "flex" }} compact>

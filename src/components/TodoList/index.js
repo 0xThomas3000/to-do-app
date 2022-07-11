@@ -3,7 +3,7 @@ import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { v4 as uuidv4 } from "uuid";
 import { addTodo } from "../../redux/actions";
-import { searchTextSelector, todoListSelector } from "../../redux/selectors";
+import { todosRemainingSelector } from "../../redux/selectors";
 import Todo from "../Todo";
 
 export default function TodoList() {
@@ -11,8 +11,8 @@ export default function TodoList() {
   const [todoName, setTodoName] = useState("");
   const [priority, setPriority] = useState("Medium");
 
-  const todoList = useSelector(todoListSelector); // Seperate this selector here to a "selectors.js"
-  const searchText = useSelector(searchTextSelector);
+  const todoList = useSelector(todosRemainingSelector); // Seperate this selector here to a "selectors.js"
+  // const searchText = useSelector(searchTextSelector);
   // console.log({ todoList, searchText });
 
   const handleInputChange = (e) => {

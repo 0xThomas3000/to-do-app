@@ -3,13 +3,15 @@ import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { v4 as uuidv4 } from "uuid";
 import { addTodo } from "../../redux/actions";
+import { todoListSelector } from "../../redux/selectors";
+import Todo from "../Todo";
 
 export default function TodoList() {
   const dispatch = useDispatch();
   const [todoName, setTodoName] = useState("");
-  const [prioriry, setPriority] = useState("Medium");
+  const [priority, setPriority] = useState("Medium");
 
-  const todoList = useSelector((state) => state.todoList);
+  const todoList = useSelector(todoListSelector); // Seperate this selector here to a "selectors.js"
   console.log(todoList);
 
   const handleInputChange = (e) => {
@@ -28,24 +30,30 @@ export default function TodoList() {
         id: uuidv4(),
         name: todoName,
         completed: false,
-        priority: prioriry,
+        priority: priority,
       })
     );
+
+    setTodoName("");
+    setPriority("Medium");
   };
 
   return (
     <Row style={{ height: "calc(100% - 40px)" }}>
       <Col span={24} style={{ height: "calc(100% - 40px)", overflowY: "auto" }}>
-        {/* <Todo name="Learn React" prioriry="High" />
-        <Todo name="Learn Redux" prioriry="Medium" />
-        <Todo name="Learn JavaScript" prioriry="Low" /> */}
+        {/* <Todo name="Learn React" priority="High" />
+        <Todo name="Learn Redux" priority="Medium" />
+        <Todo name="Learn JavaScript" priority="Low" /> */}
+        {todoList.map((todo) => (
+          <Todo key={todo.id} name={todo.name} priority={todo.priority} />
+        ))}
       </Col>
       <Col span={24}>
         <Input.Group style={{ display: "flex" }} compact>
           <Input value={todoName} onChange={handleInputChange} />
           <Select
             defaultValue="Medium"
-            value={prioriry}
+            value={priority}
             onChange={handlePriorityChange}
           >
             <Select.Option value="High" label="High">

@@ -1,9 +1,7 @@
 const initState = {
-  filters: {
-    search: "",
-    status: "All",
-    priority: [],
-  },
+  search: "",
+  status: "All",
+  priorities: [],
 };
 
 const filtersReducer = (state = initState, action) => {
@@ -14,8 +12,19 @@ const filtersReducer = (state = initState, action) => {
         search: action.payload,
       };
 
+    case "filters/statusFilterChange":
+      return {
+        ...state,
+        status: action.payload,
+      };
+
+    case "filters/prioritiesFilterChange":
+      return {
+        ...state,
+        priorities: action.payload,
+      };
     default:
-      return state; // Return the current state (not yet updated)
+      return state;
   }
 };
 

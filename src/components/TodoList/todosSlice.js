@@ -22,15 +22,11 @@
 
 // export default todoListReducer;
 
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 
-export default createSlice({
+const todosSlice = createSlice({
   name: "todoList",
-  initialState: [
-    { id: 1, name: "Learn Yoga", completed: false, priority: "Medium" },
-    { id: 2, name: "Learn Redux", completed: true, priority: "High" },
-    { id: 3, name: "Learn JavaScript", completed: false, priority: "Low" },
-  ],
+  initialState: { status: "idle", todos: [] }, // [] => { status: '',  todos: [] }
   reducers: {
     // IMMER
     addTodo: (state, action) => {
@@ -43,4 +39,82 @@ export default createSlice({
       }
     },
   },
+  extraReducers: (builder) => {
+    builder
+      .addCase(fetchTodos.pending, (state, action) => {
+        state.status = "loading";
+      })
+      .addCase(fetchTodos.fulfilled, (state, action) => {
+        console.log({ action });
+        state.todos = action.payload;
+        state.status = "idle";
+      })
+      .addCase(addNewTodo.fulfilled, (state, action) => {
+        state.todos.push(action.payload); // Cập nhật lại dữ liệu trong kho
+      })
+      .addCase(updateTodo.fulfilled, (state, action) => {
+        let currentTodo = state.todos.find(
+          (todo) => todo.id === action.payload
+        );
+        currentTodo = action.payload;
+      });
+  },
 });
+
+export default todosSlice;
+
+// action (object) va action creators () => { return action }
+// thunk action (function) & thunk action creators () => { return thunk action }
+export function addTodos(todo) {
+  // THunk function - Thunk action
+  // getState: to get all of current states existing in the store
+  return function addTodosThunk(dispatch, getState) {
+    console.log("[addTodosThunk]", getState());
+    console.log({ todo });
+    // Custom
+    todo.name = "Tuan test updated";
+    dispatch(todosSlice.actions.addTodo(todo));
+
+    console.log("[addTodosThunk after]", getState());
+  };
+}
+
+// Create a Thunk function using createAsyncThunk API
+export const fetchTodos = createAsyncThunk("todos/fetchTodos", async () => {
+  const res = await fetch("/api/todos");
+  const data = await res.json();
+  return data.todos;
+});
+
+// A Thunk
+export const addNewTodo = createAsyncThunk(
+  "todos/addNewTodo",
+  async (newTodo) => {
+    const res = await fetch("/api/todos", {
+      method: "POST",
+      body: JSON.stringify(newTodo),
+    });
+    const data = await res.json();
+    console.log({ data });
+    return data.todos;
+  }
+);
+
+export const updateTodo = createAsyncThunk(
+  "todos/updateTodo",
+  async (updatedTodo) => {
+    const res = await fetch("/api/updateTodo", {
+      method: "POST",
+      body: JSON.stringify(updatedTodo),
+    });
+    const data = await res.json();
+    console.log("[updateTodo]", { data });
+    return data.todos;
+  }
+);
+
+/* Moi createAsyncThunk tao ra 3 actions tuong ung (3 trang thai cua Promise)
+    => todos/fetchTodos/pending
+    => todos/fetchTodos/fullfilled
+    => todos/fetchTodos/rejected
+*/

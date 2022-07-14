@@ -43,6 +43,7 @@
     ]
   },
   "devDependencies": {
+    "@redux-devtools/core": "^3.13.1",
     "miragejs": "^0.1.45"
   }
 }
